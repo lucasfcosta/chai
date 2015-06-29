@@ -399,28 +399,32 @@ describe('expect', function () {
     }, "expected { foo: \'bar\' } to be empty");
 
     err(function(){
+      expect(0).to.be.empty;
+    }, "expected 0 to be empty");
+
+    err(function(){
       expect(null).to.be.empty;
-    }, "expected null to exist");
+    }, "expected null to be empty");
 
     err(function(){
       expect(undefined).to.be.empty;
-    }, "expected undefined to exist");
+    }, "expected undefined to be empty");
 
     err(function(){
       expect().to.be.empty;
-    }, "expected undefined to exist");
+    }, "expected undefined to be empty");
 
     err(function(){
       expect(null).to.not.be.empty;
-    }, "expected null to exist");
+    }, "expected null not to be empty");
 
     err(function(){
       expect(undefined).to.not.be.empty;
-    }, "expected undefined to exist");
+    }, "expected undefined not to be empty");
 
     err(function(){
       expect().to.not.be.empty;
-    }, "expected undefined to exist");
+    }, "expected undefined not to be empty");
     
   });
 
