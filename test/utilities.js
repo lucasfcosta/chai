@@ -432,12 +432,12 @@ describe('utilities', function () {
 
       _chai.config.truncateThreshold = 5;
 
-      var arr = []
-        , exp = '[ 1, 2, 3, 4, 5, ... ]'
-        , isNode = true;
+      var arr = [];
+      var exp = '[ Int8Array(10000) ]';
+      var isNode = true;
 
       // Filling arr with lots of elements
-      for (var i = 1; i <= 1000; i++) {
+      for (var i = 1; i <= 10000; i++) {
         arr.push(i);
       }
 
@@ -447,7 +447,7 @@ describe('utilities', function () {
 
       if ((!isNode && 'Int8Array' in window) ||
           isNode && typeof 'Int8Array' !== undefined) {
-        expect(_.inspect(new Int8Array(arr))).to.equal(exp);
+        expect(_.objDisplay(new Int8Array(arr))).to.equal(exp);
       }
     });
   });
