@@ -995,6 +995,11 @@ describe('should', function() {
 
   it('increase, decrease', function() {
     var obj = { value: 10 },
+        arr = ['one', 'two'],
+        pFn   = function() { arr.push('three') },
+        popFn = function() { arr.pop() },
+        lenFn = function() { return arr.length },
+        nFn   = function() { return null },
         incFn = function() { obj.value += 2 },
         decFn = function() { obj.value -= 3 },
         smFn  = function() { obj.value += 0 };
@@ -1006,6 +1011,14 @@ describe('should', function() {
     smFn.should.not.decrease(obj, 'value');
     incFn.should.not.decrease(obj, 'value');
     decFn.should.decrease(obj, 'value');
+
+    nFn.should.not.increase(lenFn);
+    popFn.should.not.increase(lenFn);
+    pFn.should.increase(lenFn);
+
+    nFn.should.not.decrease(lenFn);
+    pFn.should.not.decrease(lenFn);
+    popFn.should.decrease(lenFn);
   });
 
   it('extensible', function() {
