@@ -982,6 +982,26 @@ describe('expect', function () {
 
       errMap.set({ foo: 1 });
 
+      // Using the same assertions as above but with `.deep` flag instead of using referential equality
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.any.deep.keys({iAmA: 'key'});
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.any.deep.keys('thisDoesNotExist', 'thisToo', {iAmA: 'key'});
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.all.deep.keys({iAmA: 'key'}, {thisIsAnother: 'key'});
+
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.contain.all.deep.keys({iAmA: 'key'});
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.contain.all.deep.keys({iAmA: 'key'}, 'thisDoesNotExist');
+
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.any.deep.keys({iDoNot: 'exist'});
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.any.deep.keys('thisIsNotAkey', {iDoNot: 'exist'}, {33: 20});
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.all.deep.keys('thisDoesNotExist', 'thisToo', {thisIsAnother: 'key'});
+
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.any.deep.keys([{iAmA: 'key'}]);
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.any.deep.keys([20, 1, {iAmA: 'key'}]);
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.have.all.deep.keys([{iAmA: 'key'}, {thisIsAnother: 'key'}]);
+
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.any.deep.keys([{13: 37}, 'thisDoesNotExist', 'thisToo']);
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.any.deep.keys([20, 1, {13: 37}]);
+      expect(new Map([[{iAmA: 'key'}, 'aValue'], [{thisIsAnother: 'key'}, 'anotherValue']])).to.not.have.all.deep.keys([{iAmA: 'key'}, {'iDoNot': 'exist'}]);
+
       err(function(){
         expect(errMap).to.have.keys();
       }, "keys required");
@@ -997,6 +1017,16 @@ describe('expect', function () {
       err(function(){
         expect(errMap).to.contain.keys([]);
       }, "keys required");
+
+      // Uncomment this after solving https://github.com/chaijs/chai/issues/662
+      // This should fail because of referential equality (this is a strict comparison)
+      // err(function(){
+      //   expect(new Map([[{foo: 1}, 'bar']])).to.contain.keys({ foo: 1 });
+      // }, 'expected [ [ { foo: 1 }, 'bar' ] ] to contain key { foo: 1 }');
+
+      // err(function(){
+      //   expect(new Map([[{foo: 1}, 'bar']])).to.contain.deep.keys({ iDoNotExist: 0 })
+      // }, 'expected [ { foo: 1 } ] to deeply contain key { iDoNotExist: 0 }');
     }
 
     if (typeof Set !== 'undefined') {
@@ -1061,6 +1091,26 @@ describe('expect', function () {
       var errSet = new Set();
       errSet.add({ foo: 1});
 
+      // Using the same assertions as above but with `.deep` flag instead of using referential equality
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.any.deep.keys({thisIs: 'anExampleObject'});
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.any.deep.keys('thisDoesNotExist', 'thisToo', {thisIs: 'anExampleObject'});
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.all.deep.keys({thisIs: 'anExampleObject'}, {anotherObj: 'foo'});
+
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.contain.all.deep.keys({thisIs: 'anExampleObject'});
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.contain.all.deep.keys({thisIs: 'anExampleObject'}, 'thisDoesNotExist');
+
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.any.deep.keys({iDoNot: 'exist'});
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.any.deep.keys('thisIsNotAkey', {iDoNot: 'exist'}, {33: 20});
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.all.deep.keys('thisDoesNotExist', 'thisToo', {anotherObj: 'foo'});
+
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.any.deep.keys([{thisIs: 'anExampleObject'}]);
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.any.deep.keys([20, 1, {thisIs: 'anExampleObject'}]);
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.have.all.deep.keys([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}]);
+
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.any.deep.keys([{13: 37}, 'thisDoesNotExist', 'thisToo']);
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.any.deep.keys([20, 1, {13: 37}]);
+      expect(new Set([{thisIs: 'anExampleObject'}, {anotherObj: 'foo'}])).to.not.have.all.deep.keys([{thisIs: 'anExampleObject'}, {'iDoNot': 'exist'}]);
+
       err(function(){
         expect(errSet).to.have.keys();
       }, "keys required");
@@ -1076,6 +1126,16 @@ describe('expect', function () {
       err(function(){
         expect(errSet).to.contain.keys([]);
       }, "keys required");
+
+      // Uncomment this after solving https://github.com/chaijs/chai/issues/662
+      // This should fail because of referential equality (this is a strict comparison)
+      // err(function(){
+      //   expect(new Set([{foo: 1}])).to.contain.keys({ foo: 1 });
+      // }, 'expected [ { foo: 1 } ] to deeply contain key { foo: 1 }');
+
+      // err(function(){
+      //   expect(new Set([{foo: 1}])).to.contain.deep.keys({ iDoNotExist: 0 });
+      // }, 'expected [ { foo: 1 } ] to deeply contain key { iDoNotExist: 0 }');
     }
 
     err(function(){
