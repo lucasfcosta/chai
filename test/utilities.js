@@ -109,7 +109,7 @@ describe('utilities', function () {
       info.value.should.equal(obj.dimensions.units);
       info.name.should.equal('units');
       info.exists.should.be.true;
-    }); 
+    });
 
     it('should handle non-existent property', function() {
       var info = gpi('dimensions.size', obj);
@@ -118,7 +118,7 @@ describe('utilities', function () {
       expect(info.value).to.be.undefined;
       info.name.should.equal('size');
       info.exists.should.be.false;
-    }); 
+    });
 
     it('should handle array index', function() {
       var info = gpi('primes[2]', obj);
@@ -127,7 +127,7 @@ describe('utilities', function () {
       info.value.should.equal(obj.primes[2]);
       info.name.should.equal(2);
       info.exists.should.be.true;
-    }); 
+    });
 
     it('should handle dimensional array', function() {
       var info = gpi('dimensions.lengths[2][1]', obj);
@@ -136,7 +136,7 @@ describe('utilities', function () {
       info.value.should.equal(obj.dimensions.lengths[2][1]);
       info.name.should.equal(1);
       info.exists.should.be.true;
-    }); 
+    });
 
     it('should handle out of bounds array index', function() {
       var info = gpi('dimensions.lengths[3]', obj);
@@ -839,6 +839,113 @@ describe('utilities', function () {
       });
 
       expect(gettem(obj)).to.have.same.members([cat, dog, bird]);
+    });
+  });
+
+  describe('checkError', function () {
+    var checkError;
+
+    beforeEach(function () {
+      chai.use(function (_chai, _) {
+        checkError = _.checkError;
+      });
+    });
+
+    it('compatibleInstance', function () {
+      var errorInstance = new Error('I am an instance');
+      var sameInstance = errorInstance;
+      var otherInstance = new Error('I an another instance');
+      var aNumber = 1337;
+
+      expect(checkError.compatibleInstance(errorInstance, sameInstance)).to.be.true;
+      expect(checkError.compatibleInstance(errorInstance, otherInstance)).to.be.false;
+      expect(checkError.compatibleInstance(errorInstance, Error)).to.be.true;
+      expect(checkError.compatibleInstance(errorInstance, aNumber)).to.be.true;
+    });
+
+    it('compatibleConstructor', function () {
+      var errorInstance = new Error('I am an instance');
+      var sameInstance = errorInstance;
+      var otherInstance = new Error('I an another instance');
+      var derivedInstance = new TypeError('I inherit from Error');
+
+      var anObject = {};
+      var aNumber = 1337;
+
+      expect(checkError.compatibleConstructor(errorInstance, sameInstance)).to.be.true;
+      expect(checkError.compatibleConstructor(errorInstance, otherInstance)).to.be.true;
+      expect(checkError.compatibleConstructor(derivedInstance, errorInstance)).to.be.true;
+      expect(checkError.compatibleConstructor(errorInstance, derivedInstance)).to.be.false;
+
+      expect(checkError.compatibleConstructor(errorInstance, Error)).to.be.true;
+      expect(checkError.compatibleConstructor(derivedInstance, TypeError)).to.be.true;
+      expect(checkError.compatibleConstructor(errorInstance, TypeError)).to.be.false;
+
+      expect(checkError.compatibleConstructor(errorInstance, anObject)).to.be.false;
+      expect(checkError.compatibleConstructor(errorInstance, aNumber)).to.be.false;
+    });
+
+    it('compatibleMessage', function () {
+      var errorInstance = new Error('I am an instance');
+      var derivedInstance = new TypeError('I inherit from Error');
+      var thrownMessage = 'Imagine I have been thrown';
+
+      expect(checkError.compatibleMessage(errorInstance, /instance$/)).to.be.true;
+      expect(checkError.compatibleMessage(derivedInstance, /Error$/)).to.be.true;
+      expect(checkError.compatibleMessage(errorInstance, /unicorn$/)).to.be.false;
+      expect(checkError.compatibleMessage(derivedInstance, /dinosaur$/)).to.be.false;
+
+      expect(checkError.compatibleMessage(errorInstance, 'instance')).to.be.true;
+      expect(checkError.compatibleMessage(derivedInstance, 'Error')).to.be.true;
+      expect(checkError.compatibleMessage(errorInstance, 'unicorn')).to.be.false;
+      expect(checkError.compatibleMessage(derivedInstance, 'dinosaur')).to.be.false;
+
+      expect(checkError.compatibleMessage(thrownMessage, /thrown$/)).to.be.true;
+      expect(checkError.compatibleMessage(thrownMessage, /^Imagine/)).to.be.true;
+      expect(checkError.compatibleMessage(thrownMessage, /unicorn$/)).to.be.false;
+      expect(checkError.compatibleMessage(thrownMessage, /dinosaur$/)).to.be.false;
+
+      expect(checkError.compatibleMessage(thrownMessage, 'Imagine')).to.be.true;
+      expect(checkError.compatibleMessage(thrownMessage, 'thrown')).to.be.true;
+      expect(checkError.compatibleMessage(thrownMessage, 'unicorn')).to.be.false;
+      expect(checkError.compatibleMessage(thrownMessage, 'dinosaur')).to.be.false;
+    });
+
+    it('constructorName', function () {
+      var errorInstance = new Error('I am an instance');
+      var derivedInstance = new TypeError('I inherit from Error');
+      var thrownMessage = 'Imagine I have been thrown';
+
+      expect(checkError.getConstructorName(errorInstance)).to.be.equal('Error');
+      expect(checkError.getConstructorName(derivedInstance)).to.be.equal('TypeError');
+
+      expect(checkError.getConstructorName(thrownMessage)).to.be.equal('Imagine I have been thrown');
+
+      expect(checkError.getConstructorName(Error)).to.be.equal('Error');
+      expect(checkError.getConstructorName(TypeError)).to.be.equal('TypeError');
+
+      expect(checkError.getConstructorName(null)).to.be.equal(null);
+      expect(checkError.getConstructorName(undefined)).to.be.equal(undefined);
+    });
+
+    it('getMessage', function () {
+      var errorInstance = new Error('I am an instance');
+      var derivedInstance = new TypeError('I inherit from Error');
+      var thrownMessage = 'Imagine I have been thrown';
+
+      var errorExpMsg = errorInstance.message;
+      var derivedExpMsg = derivedInstance.message;
+
+      expect(checkError.getMessage(errorInstance)).to.be.equal(errorExpMsg);
+      expect(checkError.getMessage(derivedInstance)).to.be.equal(derivedExpMsg);
+
+      expect(checkError.getMessage(thrownMessage)).to.be.equal('Imagine I have been thrown');
+
+      expect(checkError.getMessage(Error)).to.be.equal('');
+      expect(checkError.getMessage(TypeError)).to.be.equal('');
+
+      expect(checkError.getMessage(null)).to.be.equal('');
+      expect(checkError.getMessage(undefined)).to.be.equal('');
     });
   });
 });
