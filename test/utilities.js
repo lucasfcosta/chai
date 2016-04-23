@@ -180,13 +180,13 @@ describe('utilities', function () {
       hp(1, arr).should.be.true;
       hp(3, arr).should.be.false;
     });
-    
+
     it('should handle literal types', function() {
       var s = 'string literal';
       hp('length', s).should.be.true;
       hp(3, s).should.be.true;
       hp(14, s).should.be.false;
-      
+
       hp('foo', 1).should.be.false;
     });
 
@@ -767,13 +767,13 @@ describe('utilities', function () {
 
     it('returns enumerable symbols only', function () {
       if (typeof Symbol !== 'function') return;
-      
+
       var cat = Symbol('cat')
         , dog = Symbol('dog')
         , frog = Symbol('frog')
         , cow = 'cow'
         , obj = {};
-      
+
       obj[cat] = 'meow';
       obj[dog] = 'woof';
 
@@ -816,14 +816,14 @@ describe('utilities', function () {
 
     it('returns enumerable property names and symbols', function () {
       if (typeof Symbol !== 'function') return;
-      
+
       var cat = Symbol('cat')
         , dog = Symbol('dog')
         , frog = Symbol('frog')
         , bird = 'bird'
         , cow = 'cow'
         , obj = {};
-      
+
       obj[cat] = 'meow';
       obj[dog] = 'woof';
       obj[bird] = 'chirp';
@@ -859,8 +859,8 @@ describe('utilities', function () {
 
       expect(checkError.compatibleInstance(errorInstance, sameInstance)).to.be.true;
       expect(checkError.compatibleInstance(errorInstance, otherInstance)).to.be.false;
-      expect(checkError.compatibleInstance(errorInstance, Error)).to.be.true;
-      expect(checkError.compatibleInstance(errorInstance, aNumber)).to.be.true;
+      expect(checkError.compatibleInstance(errorInstance, Error)).to.be.false;
+      expect(checkError.compatibleInstance(errorInstance, aNumber)).to.be.false;
     });
 
     it('compatibleConstructor', function () {
