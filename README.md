@@ -49,12 +49,6 @@
       src="https://img.shields.io/travis/chaijs/chai/master.svg?style=flat-square"
     />
   </a>
-  <a href="https://coveralls.io/r/chaijs/chai">
-    <img
-      alt="coverage:?"
-      src="https://img.shields.io/coveralls/chaijs/chai/master.svg?style=flat-square"
-    />
-  </a>
   <a href="">
     <img
       alt="devDependencies:?"
